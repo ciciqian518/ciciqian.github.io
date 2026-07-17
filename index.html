@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>备孕助手 · 用药管理（模块化原型 v1）</title>
+<!-- 主字体=悠哉(2026-07-13定稿,当前为试穿全量TTF~15MB;合并前需按字符区间分块子集化,见进展与待办) -->
+<link rel="stylesheet" href="assets/fonts/trial/trial.css">
+<!-- 备用字体(悠哉未覆盖字回退):站酷快乐体/霞鹜文楷 -->
+<link rel="stylesheet" href="assets/fonts/zcool-kuaile/zcool-kuaile.css">
+<link rel="stylesheet" href="assets/fonts/lxgwwenkaiscreen.css">
+<!-- 设计令牌先于组件样式加载 -->
+<link rel="stylesheet" href="styles/tokens.css?v=2">
+<link rel="stylesheet" href="styles/components.css?v=34">
+</head>
+<body>
+<!-- 导出模式:地址加 ?export 时整页铺开,方便 html.to.design 抓全今日页 -->
+<script>if(location.search.indexOf('export')>-1)document.body.classList.add('export');</script>
+<!-- 图像锐化滤镜(勾边增清实验 2026-07-14;不想要就删这段 svg + components.css 里那条 filter 规则) -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <filter id="crisp"><feConvolveMatrix order="3" preserveAlpha="true"
+    kernelMatrix="0 -0.4 0  -0.4 2.6 -0.4  0 -0.4 0"/></filter>
+</svg>
+
+<div class="hd">
+  <h1>备孕助手 · 用药管理（模块化原型）</h1>
+  <p>点圆圈打卡 → 进度环 / 库存「还够N天」会真的变 · 雪诺同点「该补了」看补货</p>
+</div>
+
+<div class="phone"><div class="screen">
+  <div class="sb"><span>9:41</span><span>📶 🔋</span></div>
+  <div class="scroll">
+
+    <!-- ===================== 今日（核心） ===================== -->
+    <div class="page active" id="today" data-tab="today">
+      <div class="hero" id="hero-el" onclick="openSetup(false)" style="cursor:pointer">
+        <div class="d" id="hero-day"><!-- JS 填：移植后第N天/孕周 --></div>
+        <div class="s" id="hero-sub"><!-- JS 填：里程碑副行 --></div>
+      </div>
+
+      <div class="ringwrap">
+        <!-- 蜡笔 PNG 环(ring-*.png 到位自动启用),JS 加缺口+进度遮罩+末端蓝点 -->
+        <div class="ring-img" id="ring-img" style="display:none">
+          <img id="ring-img-track" src="assets/ui/ring-track.png" alt="">
+          <img id="ring-img-fill" src="assets/ui/ring-crayon.png" alt="">
+          <div class="ring-dot" id="ring-dot" style="display:none"></div>
+        </div>
+        <!-- 无图时回退:扁平 SVG 环(色用 token) -->
+        <svg id="ring-svg" width="212" height="210" viewBox="0 0 212 210">
+          <path d="M46.9 175.5 A92 92 0 1 1 165.1 175.5" fill="none"
+                stroke="var(--ring-track)" stroke-width="13" stroke-linecap="round"/>
+          <path id="ring-fill" d="M46.9 175.5 A92 92 0 1 1 165.1 175.5" fill="none"
+                stroke="var(--teal)" stroke-width="13" stroke-linecap="round"
+                pathLength="100" stroke-dasharray="0 100"
+                style="transition:stroke-dasharray .5s ease"/>
+        </svg>
+        <div class="rc">
+          <div class="pct" id="ring-pct">0<small>%</small></div>
+          <div class="lab" id="ring-lab">今日用药 0/0</div>
+        </div>
+        <!-- 吉祥物插槽:按阶段成长(data/assets.js),缺图自动用占位 -->
+        <img class="baby" id="mascot-img" src="assets/icons/mascot-baby.png" alt=""
+             onerror="this.onerror=null;this.src='assets/icons/mascot-baby.png'">
+        <div class="mascot-say" id="mascot-say">我来看看今天吃了没有呀？</div>
+        <img class="say-deco" src="assets/ui/decor-dashline.png" alt="" onerror="this.style.display='none'">
+        <!-- 草/花按阶段由 timeline.js 的 renderStageDecor 动态渲染(.ring-decor-auto) -->
+        <!-- 台词末尾手绘爱心:全局常驻(各阶段一致) -->
+        <img class="ring-decor" src="assets/ui/decor-heart.png" alt="" style="left:268px;bottom:14px;width:11px;transform:rotate(25deg);z-index:2" onerror="this.style.display='none'">
+      </div>
+      <div class="ringnote" id="ringnote"></div>
+      <!-- "还差N项"手绘条纹:Lovart PNG 到位自动显示,缺图不占位 -->
+      <img class="ringnote-line" src="assets/ui/ringnote-line.png" alt="" onerror="this.style.display='none'">
+
+      <!-- 时间轴由 modules/timeline.js 填充 -->
+      <div id="timeline-root"></div>
+    </div>
+
+    <!-- ===================== 方案（用药方案+医嘱变更,由 modules/plan.js 填充） ===================== -->
+    <div class="page" id="cycle" data-tab="cycle">
+      <div class="ptitle" style="padding:2px 0 8px">方案</div>
+      <div id="plan-root"></div>
+    </div>
+
+    <!-- ===================== 方案历程（医嘱变更 journey,下挖页） ===================== -->
+    <div class="page" id="history" data-tab="cycle">
+      <div class="topbar"><span class="back" onclick="go('cycle')">‹ 返回</span><span class="ptitle">方案历程</span></div>
+      <div id="history-body"></div>
+    </div>
+
+    <!-- ===================== 复诊 overview（一页汇总,可截图） ===================== -->
+    <div class="page" id="overview" data-tab="cycle">
+      <div class="topbar"><span class="back" onclick="go('cycle')">‹ 返回</span><span class="ptitle" style="flex:1;text-align:center;font-size:16px">复诊 · 当前用药一览</span><span style="width:46px;flex-shrink:0"></span></div>
+      <div id="overview-body"></div>
+    </div>
+
+    <!-- ===================== 攻关（好孕之路,由 modules/journey.js 填充） ===================== -->
+    <div class="page" id="journey" data-tab="journey">
+      <div class="ptitle" style="padding:2px 0 8px">攻关</div>
+      <div id="journey-root"></div>
+    </div>
+
+    <!-- ===================== 药品详情（由 modules/detail.js 填充） ===================== -->
+    <div class="page" id="detail" data-tab="today">
+      <div class="topbar"><span class="back" onclick="go('today')">‹ 返回</span><span class="ptitle" id="detail-title">药品详情</span></div>
+      <div id="detail-body"></div>
+    </div>
+
+    <!-- ===================== 加药/编辑表单（由 modules/plan.js 填充） ===================== -->
+    <div class="page" id="medform" data-tab="cycle">
+      <div class="topbar mf-top">
+        <span class="back" id="mf-cancel" onclick="mfExit()">取消</span>
+        <span class="ptitle" id="medform-title">加一个药</span>
+        <span class="mf-save-top" onclick="saveMedForm()">保存</span>
+      </div>
+      <div id="medform-body"></div>
+      <div class="mf-footer">
+        <div class="btnf" id="mf-save-btm" onclick="saveMedForm()">保存 · 加下一个</div>
+        <div class="mf-finish" id="mf-finish" onclick="saveMedForm(true)">保存并完成加药 ›</div>
+      </div>
+    </div>
+
+    <!-- ===================== 我的 ===================== -->
+    <div class="page" id="mine" data-tab="mine">
+      <div class="ptitle" style="padding:2px 0 10px">我的</div>
+
+      <!-- 顺序:周期 → 时光信箱 → 家人 → 提醒 → 账号 → 隐私(Cici 2026-07-17 定) -->
+      <div class="card">
+        <div class="ch"><span><span class="em" data-ic="sprout"></span>周期</span></div>
+        <div class="row" onclick="openSetup(false)" style="cursor:pointer"><span class="em" data-ic="calendar"></span>周期设置<span class="r">移植日 / 验孕日 ›</span></div>
+        <div class="row" onclick="openCalib()" style="cursor:pointer"><span class="em" data-ic="ruler"></span>孕周校准<span class="r">B超后更准 ›</span></div>
+      </div>
+
+      <div class="card">
+        <div class="ch"><span><span class="em" data-ic="mail"></span>时光信箱</span></div>
+        <div class="row" onclick="openMomentList()" style="cursor:pointer"><span class="em" data-ic="heart"></span>记下的时刻<span class="r" id="moment-count">0 条 ›</span></div>
+      </div>
+
+      <div class="card">
+        <div class="ch"><span><span class="em" data-ic="users"></span>家人</span></div>
+        <div class="row" onclick="shareProgress()" style="cursor:pointer"><span class="em" data-ic="share"></span>分享进度给家人<span class="r">孕周/第N天/下一关 ›</span></div>
+        <div class="row" onclick="openRefill()" style="cursor:pointer"><span class="em" data-ic="cart"></span>补药购物清单<span class="r">分享给家人开药 ›</span></div>
+      </div>
+
+      <div class="card">
+        <div class="ch"><span><span class="em" data-ic="bell"></span>提醒</span></div>
+        <div class="row" style="cursor:pointer"><span class="em" data-ic="message"></span>到点弹窗提醒<span class="r" id="set-remind" onclick="toggleSetting('remindOn',this)">开 ›</span></div>
+        <div class="row" style="cursor:pointer"><span class="em" data-ic="music"></span>提醒声音<span class="r" id="set-sound" onclick="toggleSetting('soundOn',this)">开 ›</span></div>
+        <div class="row" style="cursor:pointer" onclick="playRingtone()"><span class="em" data-ic="music"></span>铃声 · 小星星(八音盒)<span class="r">试听 ›</span></div>
+      </div>
+      <div class="card" style="background:var(--amber-bg);border-color:#ecd9b3">
+        <div style="font-size:12px;color:#8a6a2e;line-height:1.6">弹窗提醒只在<b>页面开着时</b>生效(网页/小程序无法后台推送)。强提醒 = 按用药时段设手机闹钟,响了打开本页打卡。</div>
+      </div>
+
+      <div class="card">
+        <div class="ch"><span><span class="em" data-ic="user"></span>账号与数据</span></div>
+        <div class="row"><span class="em" data-ic="phone"></span>本机使用中<span class="r">无需注册,数据只在本机</span></div>
+        <div class="row" onclick="doExportBackup()" style="cursor:pointer"><span class="em" data-ic="file"></span>导出备份(JSON)<span class="r">存到微信收藏/网盘 ›</span></div>
+        <div class="row" onclick="doImportBackup()" style="cursor:pointer"><span class="em" data-ic="shield"></span>导入备份<span class="r">换手机一键恢复 ›</span></div>
+        <div class="row" style="color:var(--soft)"><span class="em" data-ic="heart"></span>微信登录 · 云端备份<span class="r">敬请期待 ›</span></div>
+      </div>
+
+      <div class="card" style="background:var(--teal-bg);border-color:#cfe4df">
+        <div style="font-size:12px;color:var(--teal-d);display:flex;align-items:flex-start;gap:5px"><span class="em" data-ic="lock" style="flex-shrink:0"></span><span>数据存在你手机本地,不上服务器。所有用药以医嘱和说明书为准。</span></div>
+      </div>
+    </div>
+
+    <!-- ===================== 补货（由 inventory.js 填充） ===================== -->
+    <div class="page" id="refill" data-tab="today">
+      <div class="topbar"><span class="back" onclick="go('today')">‹ 返回</span><span class="ptitle">余量提醒</span></div>
+      <div id="refill-body"></div>
+    </div>
+
+  </div>
+
+  <div class="fab" id="fab" onclick="openMedForm()">＋</div>
+  <!-- tab 图标 = 线性 SVG(设计规范:功能图标克制线性,不用 emoji) -->
+  <div class="tab">
+    <div id="t-today" class="on" onclick="go('today')"><i><img class="tabimg" src="assets/ui/tab-today.png" onload="this.nextElementSibling.style.display='none'" onerror="this.remove()"><svg viewBox="0 0 24 24"><rect x="5" y="4.5" width="14" height="16.5" rx="2.5"/><path d="M9 2.8h6v3.4H9z"/><path d="M8.5 10.5h7M8.5 14h7M8.5 17.5h4.5"/></svg></i>今日</div>
+    <div id="t-cycle" onclick="go('cycle')"><i><img class="tabimg" src="assets/ui/tab-plan.png" onload="this.nextElementSibling.style.display='none'" onerror="this.remove()"><svg viewBox="0 0 24 24"><rect x="3.2" y="8.6" width="17.6" height="6.8" rx="3.4" transform="rotate(-35 12 12)"/><path d="M9.2 8l5.6 8"/></svg></i>方案</div>
+    <div id="t-journey" onclick="go('journey')"><i><img class="tabimg" src="assets/ui/tab-journey.png" onload="this.nextElementSibling.style.display='none'" onerror="this.remove()"><svg viewBox="0 0 24 24"><path d="M3 19.5L9 8.5l4 6.5 3-4.5 5 9z"/><path d="M9 4.5v-2M9 2.5h3.5l-1 1.2 1 1.2H9"/></svg></i>攻关</div>
+    <div id="t-mine"  onclick="go('mine')"><i><img class="tabimg" src="assets/ui/tab-mine.png" onload="this.nextElementSibling.style.display='none'" onerror="this.remove()"><svg viewBox="0 0 24 24"><circle cx="12" cy="9" r="4.2"/><path d="M4.8 20.5c1.6-3.6 4.2-5 7.2-5s5.6 1.4 7.2 5"/></svg></i>我的</div>
+  </div>
+</div></div>
+
+<!-- 周期设置弹窗（首次 onboarding + 我的页入口共用,双模式） -->
+<div id="setup-mask" style="display:none;position:fixed;inset:0;background:rgba(40,38,33,.45);z-index:50;align-items:center;justify-content:center">
+  <div style="background:var(--bg);border-radius:16px;padding:20px;width:min(330px,88vw);max-height:86vh;overflow:auto">
+    <div style="font-weight:700;font-size:16px;margin-bottom:4px;display:flex;align-items:center;gap:6px"><span class="em" data-ic="sprout"></span>你现在的阶段</div>
+    <div style="font-size:11.5px;color:var(--soft);margin-bottom:10px">数据只存在你手机本地,不上传。</div>
+    <div class="chips" id="su-mode" style="margin-bottom:12px">
+      <span class="chip on" data-m="ivf" onclick="setupMode('ivf')">IVF · 移植后</span>
+      <span class="chip" data-m="natural" onclick="setupMode('natural')">自然怀孕 · 已验孕</span>
+    </div>
+
+    <div id="su-ivf-fields">
+      <label style="font-size:12.5px;display:block;margin-bottom:4px">移植日</label>
+      <input id="su-transfer" type="date" onchange="suTransferChanged()" style="width:100%;padding:9px;border:1px solid #ddd6c8;border-radius:10px;margin-bottom:10px;font-size:14px;background:#fff">
+      <label style="font-size:12.5px;display:block;margin-bottom:4px">移植类型(记录用,不影响计算)</label>
+      <div class="chips" id="su-ttype" style="margin-bottom:10px">
+        <span class="chip" data-t="fresh" onclick="pickChip(this)">鲜胚</span>
+        <span class="chip on" data-t="frozen" onclick="pickChip(this)">冻胚(FET)</span>
+      </div>
+      <label style="font-size:12.5px;display:block;margin-bottom:4px">移植时胚胎发育到第几天(D几)*</label>
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+        <input id="su-embryoday" type="number" min="2" max="7" value="5" onchange="suPreview()"
+          style="width:70px;padding:9px;border:1px solid #ddd6c8;border-radius:10px;font-size:14px;background:#fff"> 天
+        <span class="chips" id="su-embryo">
+          <span class="chip" onclick="setEmbryoDay(3)">D3</span>
+          <span class="chip" onclick="setEmbryoDay(5)">D5</span>
+          <span class="chip" onclick="setEmbryoDay(6)">D6</span>
+        </span>
+      </div>
+      <div style="font-size:11px;color:var(--soft);margin-bottom:10px">看移植单:D3=卵裂期胚胎,D5/D6=囊胚(最常见 D5)。计算按国际规则(ACOG):预产期=移植日+266−胚胎天数,鲜胚冻胚同规则。</div>
+      <label style="font-size:12.5px;display:block;margin-bottom:4px">验孕日 <span style="color:var(--soft)">默认移植后14天,可改</span></label>
+      <input id="su-test" type="date" onchange="suPreview()" style="width:100%;padding:9px;border:1px solid #ddd6c8;border-radius:10px;margin-bottom:10px;font-size:14px;background:#fff">
+    </div>
+
+    <div id="su-nat-fields" style="display:none">
+      <label style="font-size:12.5px;display:block;margin-bottom:4px">末次月经第一天</label>
+      <input id="su-lmp" type="date" onchange="suPreview()" style="width:100%;padding:9px;border:1px solid #ddd6c8;border-radius:10px;margin-bottom:6px;font-size:14px;background:#fff">
+      <div style="font-size:11px;color:var(--soft);margin-bottom:10px">记不清可先估一个;B超后用「孕周校准」改准</div>
+    </div>
+
+    <div id="su-preview" style="margin-bottom:12px"></div>
+
+    <div style="display:flex;gap:10px;justify-content:flex-end">
+      <button id="su-cancel" onclick="closeSetup()" style="padding:9px 14px;border:1px solid #ddd6c8;border-radius:10px;background:#fff;font-size:13px">取消</button>
+      <button onclick="saveSetup()" style="padding:9px 18px;border:none;border-radius:10px;background:var(--teal);color:#fff;font-size:13px;font-weight:600">保存</button>
+    </div>
+  </div>
+</div>
+
+<!-- 孕周校准弹窗（B超后医生给出更准孕周） -->
+<div id="calib-mask" style="display:none;position:fixed;inset:0;background:rgba(40,38,33,.45);z-index:50;align-items:center;justify-content:center">
+  <div style="background:var(--bg);border-radius:16px;padding:20px;width:min(320px,88vw)">
+    <div style="font-weight:700;font-size:15px;margin-bottom:4px">📐 孕周校准</div>
+    <div style="font-size:11.5px;color:var(--soft);margin-bottom:12px">B超后医生给了更准的孕周?填在这里,全局孕周和预产期都按它算。</div>
+    <label style="font-size:12.5px;display:block;margin-bottom:4px">B超日期</label>
+    <input id="cal-date" type="date" style="width:100%;padding:9px;border:1px solid #ddd6c8;border-radius:10px;margin-bottom:10px;font-size:14px;background:#fff">
+    <label style="font-size:12.5px;display:block;margin-bottom:4px">当天孕周</label>
+    <div style="display:flex;gap:8px;align-items:center;margin-bottom:14px">
+      <input id="cal-w" type="number" min="4" max="20" style="width:70px;padding:9px;border:1px solid #ddd6c8;border-radius:10px;font-size:14px;background:#fff"> 周
+      <input id="cal-d" type="number" min="0" max="6" style="width:70px;padding:9px;border:1px solid #ddd6c8;border-radius:10px;font-size:14px;background:#fff"> 天
+    </div>
+    <div style="display:flex;gap:10px;justify-content:space-between">
+      <button onclick="clearCalib()" style="padding:9px 12px;border:none;background:none;font-size:12px;color:var(--red)">清除校准</button>
+      <span>
+        <button onclick="closeCalib()" style="padding:9px 14px;border:1px solid #ddd6c8;border-radius:10px;background:#fff;font-size:13px">取消</button>
+        <button onclick="saveCalib()" style="padding:9px 18px;border:none;border-radius:10px;background:var(--teal);color:#fff;font-size:13px;font-weight:600">保存</button>
+      </span>
+    </div>
+  </div>
+</div>
+
+<!-- 加载顺序：数据 → 持久化 → 库存 → 打卡 → 时间轴 → 入口 -->
+<!-- ?v= 是防浏览器缓存的版本号,改了 JS 就把它 +1 -->
+<script src="data/medications.js?v=18"></script>
+<script src="data/assets.js?v=20"></script>
+<script src="modules/icons.js?v=5"></script>
+<script src="modules/store.js?v=17"></script>
+<script src="modules/preg.js?v=15"></script>
+<script src="modules/inventory.js?v=18"></script>
+<script src="modules/checkin.js?v=14"></script>
+<script src="modules/timeline.js?v=40"></script>
+<script src="modules/plan.js?v=34"></script>
+<script src="modules/detail.js?v=15"></script>
+<script src="modules/journey.js?v=23"></script>
+<script src="modules/remind.js?v=18"></script>
+<!-- 分享卡(日常/里程碑/补货;A1按Cici读数烘焙) -->
+<script src="modules/share.js?v=2"></script>
+<!-- 时光信箱·记下此刻(v0 粗样,文字版;语音接口预留给小程序版) -->
+<script src="modules/moments.js?v=9"></script>
+<!-- 每日全勤飞(打卡全完成的庆祝动画;定制图缺席自动回退芽宝) -->
+<script src="modules/celebrate.js?v=14"></script>
+<script src="modules/backup.js?v=1"></script>
+<script src="modules/stickynote.js?v=8"></script>
+<script src="app.js?v=21"></script>
+<!-- 摆放模式:仅 ?design 启动,正常访问零影响 -->
+<script src="modules/design-mode.js?v=8"></script>
+<!-- onboarding 示例预览(屏1):仅 ?ob1 启动,正常访问零影响 -->
+<script src="modules/onboarding.js?v=47"></script>
+</body>
+</html>
