@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>备孕助手 · 字体六选一存档(2026-07-13,定稿前留档 · 若想换字体回这里对比)</title>
+<link rel="stylesheet" href="assets/fonts/zcool-kuaile/zcool-kuaile.css">
+<link rel="stylesheet" href="assets/fonts/zcool-huangyou/zcool-huangyou.css">
+<link rel="stylesheet" href="assets/fonts/lxgwwenkaiscreen.css">
+<link rel="stylesheet" href="assets/fonts/trial/trial.css">
+<link rel="stylesheet" href="styles/tokens.css">
+<link rel="stylesheet" href="styles/components.css">
+<style>
+/* ============================================================
+ * 样张页专用样式 —— 蜡笔纹理实验区
+ * 规则:实验样式只写在这里,Cici 验收"对味"后才移植进 components.css
+ * ============================================================ */
+
+/* —— 纸纹底(整页) —— */
+body.ds{
+  display:block;max-width:420px;margin:0 auto;padding:20px 16px 80px;
+  background:var(--bg);position:relative;
+}
+body.ds::after{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:99;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+  opacity:.07;mix-blend-mode:multiply;
+}
+
+/* —— 样张区块标题 —— */
+.ds-h{font-size:13px;font-weight:700;color:var(--soft);letter-spacing:2px;
+  margin:26px 0 10px;padding-bottom:4px;border-bottom:1.5px dashed var(--line)}
+.ds-h small{font-weight:400;letter-spacing:0;margin-left:8px;color:#B3A88F}
+.ds-title{font-size:19px;font-weight:800;text-align:center;margin:6px 0 2px}
+.ds-sub{font-size:12px;color:var(--soft);text-align:center;margin-bottom:8px}
+
+/* —— 色板 —— */
+.sw-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.sw{border-radius:10px 12px 10px 13px;border:1.5px solid var(--line);overflow:hidden;font-size:10px;color:var(--soft);background:var(--card)}
+.sw i{display:block;height:34px}
+.sw span{display:block;padding:3px 6px}
+
+/* —— hero 蜡笔纹理版 —— */
+.hero.crayon{position:relative;overflow:hidden;box-shadow:none}
+.hero.crayon::after{
+  content:'';position:absolute;inset:0;pointer-events:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  opacity:.16;mix-blend-mode:overlay;
+}
+.hero .flower{position:absolute;right:10px;top:6px;width:58px;opacity:.9;mix-blend-mode:soft-light}
+
+/* —— 进度环(蜡笔笔触=SVG位移滤镜) + 芽宝 —— */
+.ds .ringwrap{margin:6px auto 0}
+.mascot-say{right:-70px}
+.stage-gallery img{mix-blend-mode:normal}
+
+/* —— tab 陈列条(静态) —— */
+.ds .tab{position:static;border-radius:14px;border:1.5px solid var(--line);margin-top:4px}
+
+/* —— 陈列辅助 —— */
+.ds-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.ds-note{font-size:11px;color:#B3A88F;margin-top:6px}
+.stage-gallery{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;text-align:center;font-size:10.5px;color:var(--soft)}
+.stage-gallery img{width:100%;mix-blend-mode:multiply}
+.chips{display:flex;gap:7px;flex-wrap:wrap}
+.chip{font-size:12px;padding:4px 11px;border-radius:16px 18px 16px 18px;border:1.5px solid var(--line);background:var(--card);color:var(--soft);cursor:pointer}
+.chip.on{background:var(--teal-bg);border-color:var(--teal);color:var(--teal-d);font-weight:700}
+
+/* —— 按钮/FAB 蜡笔纹理(候选,验收后移植) —— */
+.btnf,.btno,.fab{position:relative;overflow:hidden}
+.btnf::after,.fab::after{
+  content:'';position:absolute;inset:0;pointer-events:none;border-radius:inherit;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  opacity:.18;mix-blend-mode:overlay;
+}
+/* 字体切换器 */
+.font-switch{display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap}
+body.f-kuaile{--font-hand:"ZCOOL KuaiLe","幼圆",sans-serif}
+body.f-wenkai{--font-hand:"LXGW WenKai Screen","楷体",serif}
+body.f-huangyou{--font-hand:"ZCOOL QingKe HuangYou","幼圆",sans-serif}
+body.f-yozail{--font-hand:"Yozai Light","幼圆",sans-serif}
+body.f-yozai{--font-hand:"Yozai","幼圆",sans-serif}
+body.f-xiaolai{--font-hand:"Xiaolai","幼圆",sans-serif}
+body.ds,body.ds .chip,body.ds .btnf,body.ds .btno{font-family:var(--font-hand)}
+
+/* —— 药卡状态样张(该吃了/医嘱暂停)·实验样式,验收后移植 —— */
+.med.due{border-color:var(--peach);}
+.med.due .chk{border-color:var(--peach-d);box-shadow:0 0 0 3px var(--peach-bg)}
+.med.paused{border-style:dashed}
+.med.paused .ic,.med.paused .b{opacity:.55}
+.chk.rest{display:flex;align-items:center;justify-content:center;font-size:10.5px;color:var(--soft);border-style:dashed}
+
+/* —— 按钮禁用态 —— */
+.btnf.disabled{opacity:.45;pointer-events:none}
+
+/* —— 空状态/全完成样张卡 —— */
+.mood-card{text-align:center;padding:18px 14px}
+.mood-card img{mix-blend-mode:multiply}
+
+/* —— 界面部件图插槽(有图用图,无图退回CSS/SVG版) —— */
+.hero.imgbg{background:none;border:none}
+.hero.imgbg::after{display:none}
+.tab i img.tabimg{width:22px;height:22px;object-fit:contain;display:block;margin:0 auto}
+.segimg{width:16px;height:16px;vertical-align:-3px;margin-right:2px}
+#ring-img img{position:absolute;inset:0;width:100%;height:96%;object-fit:contain}
+</style>
+</head>
+<body class="ds">
+
+<div class="ds-title">🧱 组件样板墙</div>
+<div class="ds-sub">所有零件在这一页定型 · 对味了才铺真实页面<br>基准图:18_40_29 (1)</div>
+
+<!-- ① 色板 -->
+<div class="ds-h">① 色板 <small>tokens.css</small></div>
+<div class="sw-grid">
+  <div class="sw"><i style="background:var(--bg)"></i><span>纸底</span></div>
+  <div class="sw"><i style="background:var(--card)"></i><span>卡片</span></div>
+  <div class="sw"><i style="background:var(--header)"></i><span>蜡笔深蓝</span></div>
+  <div class="sw"><i style="background:var(--teal-bg)"></i><span>浅蓝底</span></div>
+  <div class="sw"><i style="background:var(--peach)"></i><span>杏橙</span></div>
+  <div class="sw"><i style="background:var(--green)"></i><span>鼠尾草绿</span></div>
+  <div class="sw"><i style="background:var(--amber-bg)"></i><span>暖琥珀底</span></div>
+  <div class="sw"><i style="background:var(--ink)"></i><span>墨色文字</span></div>
+</div>
+
+<!-- ② 字体 -->
+<div class="ds-h">② 字体 <small>点按钮切换对比,选一个</small></div>
+<div class="font-switch">
+  <span class="chip" id="fk" onclick="setFont('kuaile')">A · 快乐体</span>
+  <span class="chip" id="fw" onclick="setFont('wenkai')">B · 文楷</span>
+  <span class="chip on" id="fh" onclick="setFont('huangyou')">C · 黄油体(最圆润)</span>
+  <span class="chip" id="fyl" onclick="setFont('yozail')">D · 悠哉细(最细手写)</span>
+  <span class="chip" id="fy" onclick="setFont('yozai')">E · 悠哉</span>
+  <span class="chip" id="fx" onclick="setFont('xiaolai')">F · 小赖(最童趣)</span>
+</div>
+<div class="card">
+  <div style="font-size:21px;font-weight:800">移植后 第 25 天 · 孕6周+2天</div>
+  <div style="font-size:14.5px;font-weight:700;margin-top:6px">达芙通 · 每次 1 片 · 饭后</div>
+  <div style="font-size:12.5px;color:var(--soft);margin-top:4px">距 胎心胎芽 还有 5 天 · 数据只存在你手机本地</div>
+  <div style="font-size:11.5px;color:var(--peach-d);margin-top:4px;transform:rotate(-2deg)">我来看看今天吃了没有呀？♡</div>
+</div>
+
+<!-- ③ hero -->
+<div class="ds-h">③ hero 块 <small>图片插槽:hero-bg.png 到位自动替换</small></div>
+<div class="hero crayon" id="ds-hero">
+  <svg class="flower" viewBox="0 0 60 60" fill="none" stroke="#FBF5E9" stroke-width="1.6" stroke-linecap="round">
+    <path d="M30 52 C31 40 33 30 40 20"/><path d="M40 20 c-5 1 -8 -2 -8 -6 c5 -2 9 0 8 6z" fill="#FBF5E9" opacity=".7"/>
+    <path d="M35 34 c-6 0 -9 -3 -9 -7 c6 -1 10 2 9 7z" fill="#FBF5E9" opacity=".5"/>
+    <circle cx="44" cy="13" r="4.5" fill="#E8B4A0" stroke="none"/><circle cx="49" cy="17" r="3.4" fill="#E8B4A0" stroke="none" opacity=".8"/>
+  </svg>
+  <div class="d">移植后 第 25 天 <small>· 孕 6周+2天</small></div>
+  <div class="s">距 胎心胎芽 还有 5 天</div>
+</div>
+
+<!-- ④ 进度环 + 芽宝 -->
+<div class="ds-h">④ 进度环 + 芽宝 <small>蜡笔笔触滤镜</small></div>
+<div class="ringwrap">
+  <div id="ring-img" style="display:none;position:absolute;inset:0">
+    <img id="ring-img-track" src="assets/ui/ring-track.png" alt="">
+    <img id="ring-img-fill" src="assets/ui/ring-crayon.png" alt="">
+    <div id="ring-dot" style="position:absolute;width:13px;height:13px;border-radius:50%;background:var(--header-d);display:none"></div>
+  </div>
+  <svg id="ds-ring-svg" width="212" height="210" viewBox="0 0 212 210">
+    <defs>
+      <filter id="crayonline" x="-20%" y="-20%" width="140%" height="140%">
+        <feTurbulence type="fractalNoise" baseFrequency="0.12" numOctaves="3" seed="7" result="n"/>
+        <feDisplacementMap in="SourceGraphic" in2="n" scale="4"/>
+      </filter>
+    </defs>
+    <path d="M46.9 175.5 A92 92 0 1 1 165.1 175.5" fill="none" filter="url(#crayonline)"
+          stroke="var(--ring-track)" stroke-width="12" stroke-linecap="round"/>
+    <path d="M46.9 175.5 A92 92 0 1 1 165.1 175.5" fill="none" filter="url(#crayonline)"
+          stroke="var(--teal)" stroke-width="12" stroke-linecap="round"
+          pathLength="100" stroke-dasharray="75 100" opacity=".92"/>
+  </svg>
+  <div class="rc">
+    <div class="pct">75<small>%</small></div>
+    <div class="lab">今日用药 3/4</div>
+  </div>
+  <img class="baby" src="assets/illustrations/mascot-stage1.png" alt="">
+  <div class="mascot-say">我来看看今天吃了没有呀？</div>
+</div>
+<div class="ringnote">还差 1 项</div>
+
+<!-- ⑤ 药卡五状态 -->
+<div class="ds-h">⑤ 药卡 <small>待吃 / 该吃了 / 告急 / 已打卡 / 医嘱暂停</small></div>
+<div class="seg"><img class="segimg" src="assets/ui/seg-morning.png" onerror="this.outerHTML='☀️ '">早晨</div>
+<div class="med">
+  <div class="ic"><img src="assets/icons/form-oral.png"></div>
+  <div class="b">
+    <div class="nm"><span class="cdot" style="background:var(--c-repro)"></span>达芙通 <span class="lab2">地屈孕酮</span><span class="time">08:30·饭后</span></div>
+    <div class="use">每次 1 片 · 10mg/片</div>
+    <div class="stk ok"><div class="bar"><i style="width:62%;"></i></div><b>还够 18 天</b></div>
+  </div>
+  <div class="chk"></div>
+</div>
+<div class="med due">
+  <div class="ic"><img src="assets/icons/form-vaginal.png"></div>
+  <div class="b">
+    <div class="nm"><span class="cdot" style="background:var(--c-repro)"></span>雪诺酮 <span class="lab2">黄体酮凝胶</span><span class="time" style="background:var(--peach-bg);color:var(--peach-d);font-weight:700">09:00 · 到点啦</span></div>
+    <div class="use">每次 1 支 · 90mg/支</div>
+    <div class="stk ok"><div class="bar"><i style="width:44%;"></i></div><b>还够 9 天</b></div>
+  </div>
+  <div class="chk"></div>
+</div>
+<div class="med">
+  <div class="ic"><img src="assets/icons/form-sc.png"></div>
+  <div class="b">
+    <div class="nm"><span class="cdot" style="background:var(--c-immune)"></span>克赛 <span class="lab2">低分子肝素</span><span class="time" style="background:var(--peach-bg);color:var(--peach-d)">13:00</span></div>
+    <div class="use">每次 1 支 · 0.4ml/支</div>
+    <div class="stk low"><div class="bar"><i style="width:18%;"></i></div><b>仅够 3 天</b></div>
+    <span class="refill">⚠ 该补了 →</span>
+  </div>
+  <div class="chk"></div>
+</div>
+<div class="med paused">
+  <div class="ic"><img src="assets/icons/herbal.png"></div>
+  <div class="b">
+    <div class="nm"><span class="cdot" style="background:var(--c-nutri)"></span>滋肾育胎丸 <span class="lab2">中药调理</span><span class="time" style="background:var(--amber-bg);color:var(--amber)">今天休息 · 吃5停2</span></div>
+    <div class="use">医嘱节奏用药 · 今天不用吃,明天继续</div>
+  </div>
+  <div class="chk rest">休</div>
+</div>
+<div onclick="" style="display:flex;align-items:center;gap:8px;padding:6px 12px;font-size:12px;color:var(--soft)">
+  <span style="color:var(--green)">✓</span> 雪诺酮
+  <span style="margin-left:auto">09:12 已打卡</span><span style="padding:2px 8px">↩</span>
+</div>
+<div style="display:flex;align-items:center;gap:8px;background:#F2EAD8;border-radius:12px 14px 12px 14px;padding:10px 14px;margin:8px 0;font-size:12.5px;color:var(--soft)">
+  <span style="color:var(--green);font-weight:700">✓</span> 早晨 3/3 · 全部完成 <span style="margin-left:auto">▾</span>
+</div>
+
+<!-- ⑥ chips -->
+<div class="ds-h">⑥ 标签与选择 chips</div>
+<div class="chips" style="margin-bottom:8px">
+  <span class="chip on">每天</span><span class="chip">隔 2 天</span><span class="chip">吃 5 停 2</span>
+</div>
+<div class="ds-row">
+  <span class="time">08:30·饭后</span>
+  <span class="time" style="background:var(--peach-bg);color:var(--peach-d)">22:00·睡前</span>
+  <span class="lab2">地屈孕酮</span>
+  <span style="font-size:11px"><span class="cdot" style="background:var(--c-repro)"></span> 生殖</span>
+  <span style="font-size:11px"><span class="cdot" style="background:var(--c-immune)"></span> 免疫</span>
+  <span style="font-size:11px"><span class="cdot" style="background:var(--c-nutri)"></span> 营养</span>
+  <span style="font-size:11px"><span class="cdot" style="background:var(--c-other)"></span> 其他</span>
+</div>
+
+<!-- ⑦ 按钮 -->
+<div class="ds-h">⑦ 按钮 / FAB</div>
+<div class="btnf">保存方案</div>
+<div class="btno">医生改方案了？一键更新</div>
+<div class="btnf disabled" style="margin-top:8px">保存方案 <small style="font-weight:400">(还没填完时)</small></div>
+<div class="ds-row" style="margin-top:8px">
+  <div class="fab" style="position:static" id="ds-fab">＋</div>
+  <span class="ds-note">← 右下角悬浮加药钮(fab-add.png 到位自动替换)</span>
+</div>
+
+<!-- ⑧ 底部 tab -->
+<div class="ds-h">⑧ 底部导航</div>
+<div class="tab">
+  <div class="on"><i><img class="tabimg" src="assets/ui/tab-today.png" onload="this.nextElementSibling.style.display='none'" onerror="this.remove()"><svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="4.5" width="14" height="16.5" rx="2.5"/><path d="M9 2.8h6v3.4H9z"/><path d="M8.5 10.5h7M8.5 14h7M8.5 17.5h4.5"/></svg></i>今日</div>
+  <div><i><img class="tabimg" src="assets/ui/tab-plan.png" onload="this.nextElementSibling.style.display='none'" onerror="this.remove()"><svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3.2" y="8.6" width="17.6" height="6.8" rx="3.4" transform="rotate(-35 12 12)"/><path d="M9.2 8l5.6 8"/></svg></i>方案</div>
+  <div><i><img class="tabimg" src="assets/ui/tab-journey.png" onload="this.nextElementSibling.style.display='none'" onerror="this.remove()"><svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 19.5L9 8.5l4 6.5 3-4.5 5 9z"/><path d="M9 4.5v-2M9 2.5h3.5l-1 1.2 1 1.2H9"/></svg></i>攻关</div>
+  <div><i><img class="tabimg" src="assets/ui/tab-mine.png" onload="this.nextElementSibling.style.display='none'" onerror="this.remove()"><svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="9" r="4.2"/><path d="M4.8 20.5c1.6-3.6 4.2-5 7.2-5s5.6 1.4 7.2 5"/></svg></i>我的</div>
+</div>
+
+<!-- ⑨ 芽宝五阶段 -->
+<div class="ds-h">⑨ 芽宝五阶段 <small>随孕程成长(孕10周起医学上称胎儿)</small></div>
+<div class="stage-gallery" style="grid-template-columns:repeat(5,1fr)">
+  <div><img src="assets/illustrations/mascot-stage1.png"><br>①移植后</div>
+  <div><img src="assets/illustrations/mascot-stage2.png"><br>②验孕成功</div>
+  <div><img src="assets/illustrations/mascot-stage3.png"><br>③胎心之后</div>
+  <div><img src="assets/illustrations/mascot-stage4.png"><br>④孕10周·胎宝宝</div>
+  <div><img src="assets/illustrations/mascot-stage5.png" style="object-fit:contain;aspect-ratio:1"><br>⑤12周毕业·真宝宝</div>
+</div>
+
+<!-- ⑩ 空状态(2026-07-13 Cici 定:全完成不做专属插画,庆祝=当前阶段芽宝本尊+台词,避免与阶段②形象重复) -->
+<div class="ds-h">⑩ 空状态 <small>empty-today.png · 全完成=当前阶段芽宝+台词,无专属图</small></div>
+<div class="card mood-card">
+  <img src="assets/illustrations/empty-today.png" style="width:76%;max-width:280px">
+  <div style="font-size:13.5px;font-weight:700;margin-top:8px">今天没有用药安排</div>
+  <div style="font-size:12px;color:var(--soft);margin-top:3px">好好休息，我陪着你呀～</div>
+</div>
+<div class="ds-note" style="margin:4px 0 10px">无周期时同图,文案换「先录入你的用药方案吧」</div>
+
+<div class="ds-note" style="text-align:center;margin-top:24px">— 样板墙到此 · 每个区块都可以单独提意见 —</div>
+
+<script src="data/assets.js?v=17"></script>
+<script>
+function setFont(f){
+  document.body.classList.remove('f-kuaile','f-wenkai','f-huangyou','f-yozail','f-yozai','f-xiaolai');
+  document.body.classList.add('f-' + f);
+  const ids = { kuaile:'fk', wenkai:'fw', huangyou:'fh', yozail:'fyl', yozai:'fy', xiaolai:'fx' };
+  Object.entries(ids).forEach(([k, id]) =>
+    document.getElementById(id).classList.toggle('on', k === f));
+}
+setFont('huangyou');
+
+/* —— 界面部件插槽:有图用图,无图保持 CSS/SVG 版 —— */
+// hero 底图
+tryAsset(Assets.ui.heroBg, src => {
+  const h = document.getElementById('ds-hero');
+  h.classList.add('imgbg');
+  h.style.backgroundImage = `url(${src})`;
+  h.style.backgroundSize = '100% 100%';
+});
+// 圆环:底部留缺口的弧(对齐基准图) + 进度末端深蓝小圆点
+// GAP=缺口角度(居中于正下方),进度 0-100% 沿弧从左下顺时针长到右下
+function setRing(p){
+  const GAP = 64, START = 180 + GAP/2;          // 缺口 64°,弧从 212°(conic 自顶顺时针)起笔
+  const span = 360 - GAP, fill = span * p / 100;
+  // 几何:环中线半径≈0.44×正方形边,笔触厚≈0.105×边(img 高 96% contain)
+  const box = document.getElementById('ring-img');
+  const w = box.clientWidth, h = box.clientHeight * 0.96;
+  const side = Math.min(w, h), r = side * 0.44, capR = side * 0.053;
+  const cx = w / 2, cy = h / 2;
+  const pt = deg => {
+    const t = deg * Math.PI / 180;                // 自顶顺时针
+    return [cx + r * Math.sin(t), cy - r * Math.cos(t)];
+  };
+  // 弧端加圆头盖帽(radial 遮罩与 conic 并集),消掉 conic 切出的直角断口
+  const cap = (deg) => {
+    const [x, y] = pt(deg);
+    return `radial-gradient(circle ${capR}px at ${x}px ${y}px, #000 97%, transparent 100%)`;
+  };
+  const mask = (deg) => `conic-gradient(from ${START}deg, #000 0 ${deg}deg, transparent ${deg}deg 360deg), ${cap(START)}, ${cap(START + deg)}`;
+  const tr = document.getElementById('ring-img-track');
+  const fl = document.getElementById('ring-img-fill');
+  for (const [el, deg] of [[tr, span], [fl, fill]]){
+    el.style.webkitMaskImage = mask(deg);
+    el.style.maskImage = mask(deg);
+    el.style.webkitMaskComposite = 'source-over';
+    el.style.maskComposite = 'add';
+  }
+  // 进度末端深蓝小圆点(直径=环笔触厚,完整盖住环)
+  const [dx, dy] = pt(START + fill);
+  const dot = document.getElementById('ring-dot');
+  const dotR = capR * 1.06;
+  dot.style.width = dot.style.height = (dotR * 2) + 'px';
+  dot.style.left = (dx - dotR) + 'px';
+  dot.style.top  = (dy - dotR) + 'px';
+  dot.style.background = `var(--header-d) url(${Assets.ui.ringDot}) center/cover no-repeat`;
+  dot.style.display = 'block';
+}
+let _ringOk = 0;
+[Assets.ui.ringTrack, Assets.ui.ring].forEach(s => tryAsset(s, () => {
+  if (++_ringOk === 2){
+    document.getElementById('ring-img').style.display = 'block';
+    document.getElementById('ds-ring-svg').style.display = 'none';
+    setRing(75);   // 样张:75%
+  }
+}));
+// FAB
+tryAsset(Assets.ui.fab, src => {
+  const f = document.getElementById('ds-fab');
+  f.style.background = 'none'; f.style.boxShadow = 'none';
+  f.innerHTML = `<img src="${src}" style="width:100%;height:100%;object-fit:contain">`;
+});
+</script>
+</body>
+</html>
